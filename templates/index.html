@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Cloud Storage</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center p-6 font-sans">
+
+<header class="w-full max-w-2xl flex flex-col items-center mb-8">
+    <h1 class="text-4xl font-extrabold text-gray-800 mb-2">☁️ My Cloud Storage</h1>
+    <p class="text-gray-500">Upload, preview, and download your files effortlessly.</p>
+</header>
+
+<!-- Upload Form -->
+<form id="upload-form" method="POST" enctype="multipart/form-data" class="w-full max-w-2xl bg-white p-6 rounded-xl shadow-md mb-8 flex flex-col sm:flex-row gap-4">
+    <input type="file" name="file" class="border border-gray-300 rounded px-3 py-2 w-full sm:flex-1 focus:outline-none focus:ring-2 focus:ring-blue-400">
+    <button type="submit" class="bg-blue-500 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-600 transition">
+        Upload File
+    </button>
+</form>
+
+<!-- Uploaded Files Box -->
+<div class="w-full max-w-2xl bg-white p-6 rounded-xl shadow-md">
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Uploaded Files</h2>
+
+    {% if files %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
+        {% for file in files %}
+        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg shadow-sm hover:shadow-md transition">
+            <div class="flex items-center gap-3">
+                {% if file.endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')) %}
+                    <img src="{{ url_for('get_file', filename=file) }}" class="h-12 w-12 object-cover rounded">
+                {% endif %}
+                <span class="truncate font-medium text-gray-800" title="{{ file }}">{{ file }}</span>
+            </div>
+            <div class="flex gap-2">
+                <a href="{{ url_for('get_file', filename=file) }}" target="_blank" class="text-green-500 hover:text-green-600 font-semibold">Preview</a>
+                <a href="{{ url_for('get_file', filename=file) }}" download class="text-blue-500 hover:text-blue-600 font-semibold">Download</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="text-gray-400 italic">No files uploaded yet.</p>
+    {% endif %}
+</div>
+
+<footer class="mt-12 text-gray-400 text-sm">
+    Powered by ☁️ Cloudflare R2 & Flask
+</footer>
+
+</body>
+</html>
